@@ -1,0 +1,193 @@
+\documentclass{article}  
+\usepackage{CJKutf8}
+\usepackage{geometry}
+\geometry{a4paper,centering,scale=0.8}
+\usepackage{minted}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{float}
+\begin{document} 
+\hfuzz=\maxdimen
+\tolerance=10000
+\hbadness=10000
+\begin{CJK}{UTF8}{gbsn}  
+\title{深度学习}
+\author{赵燕}
+\date{}
+\maketitle
+\renewcommand\figurename{图}
+
+\section{深度学习概论}
+\subsection{什么是神经网络}
+\subparagraph{}
+深度学习就是训练神经网络。
+\subparagraph{}
+Example 1 – single neural network
+\subparagraph{}
+Given data about the size of houses on the real estate market and you want to fit a function that willpredict their price. It is a linear regression problem because the price as a function of size is a continuousoutput.
+\subparagraph{}
+We know the prices can never be negative so we are creating a function called Rectified Linear Unit (ReLU)which starts at zero.
+\subparagraph{}
+修正线性单元，修正的意思：取不小于0的值
+\begin{figure}[H]
+\center{\includegraphics[width=.8\textwidth]{1101.png}}
+\caption{房价预测例1}
+\label{fig:1101}
+\end{figure}
+\subparagraph{}
+注释：
+\begin{itemize}
+\item The input is the size of the house (x)
+\item The output is the price (y)
+\item The “neuron” implements the function ReLU (blue line)
+\end{itemize}
+\subparagraph{}
+Example 2 – Multiple neural network
+\subparagraph{}
+The price of a house can be affected by other features such as size, number of bedrooms, zip code andwealth. The role of the neural network is to predicted the price and it will automatically generate thehidden units. We only need to give the inputs x and the output y.
+\subparagraph{}
+\begin{figure}[H]
+\center{\includegraphics[width=.6\textwidth]{1102.png}}
+\caption{房价预测例2}
+\label{fig:1102}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.4\textwidth]{1103.png}}
+\caption{房价预测神经网络}
+\label{fig:1103}
+\end{figure}
+\paragraph{}
+已知输入的特征，预测对应的price，中间的隐藏单元：每个的输入都同时来自4个特征。
+\paragraph{}
+给到足够的(x,y)，神经网络非常擅长于计算从x到y的精准映射函数。
+\subsection{用神经网络进行监督学习}
+\subparagraph{}
+In supervised learning, we are given a data set and already know what our correct output should look like,
+having the idea that there is a relationship between the input and the output.
+\subparagraph{}
+Supervised learning problems are categorized into "regression" and "classification" problems. In aregression problem, we are trying to predict results within a continuous output, meaning that we aretrying to map input variables to some continuous function. In a classification problem, we are instead
+trying to predict results in a discrete output. In other words, we are trying to map input variables intodiscrete categories.
+\subparagraph{}
+Here are some examples of supervised learning
+\begin{figure}[H]
+\center{\includegraphics[width=.8\textwidth]{1104.png}}
+\caption{神经网络实例}
+\label{fig:1104}
+\end{figure}
+\subparagraph{}
+There are different types of neural network, for example Convolution Neural Network (CNN) used oftenfor image application and Recurrent Neural Network (RNN) used for one-dimensional sequence datasuch as translating English to Chinses or a temporal component such as text transcript. As for theautonomous driving, it is a hybrid neural network architecture.
+\begin{figure}[H]
+\center{\includegraphics[width=.8\textwidth]{1106.png}}
+\caption{神经网络种类}
+\label{fig:1106}
+\end{figure}
+\subparagraph{}
+注释：
+\begin{itemize}
+\item Standard NN:标准神经网络
+\item CNN：卷积神经网络常用于图片处理；
+\item RNN：循环神经网络适合处理一维数据序列，其中包含时间成分；
+\end{itemize}
+\subparagraph{}
+Structured vs unstructured data
+\subparagraph{}
+Structured data refers to things that has a defined meaning such as price, age whereas unstructureddata refers to thing like pixel, raw audio, text.
+\begin{figure}[H]
+\center{\includegraphics[width=.8\textwidth]{1105.png}}
+\caption{Structured vs unstructured data}
+\label{fig:1105}
+\end{figure}
+\subparagraph{}
+相比于结构化，非结构化计算机理解起来更难，应用越来越广泛，包括语音识别，文字识别，图片识别，神经网络改变了监督学习。
+\subsection{为什么深度学习会兴起}
+\subparagraph{}
+Deep learning is taking off due to a large amount of data available through the digitization of the society,
+faster computation and innovation in the development of neural network algorithm.
+\begin{figure}[H]
+\center{\includegraphics[width=.8\textwidth]{1107.png}}
+\caption{各种算法的相对排名}
+\label{fig:1107}
+\end{figure}
+Two things have to be considered to get to the high level of performance:
+\subparagraph{}
+1. Being able to train a big enough neural network
+\subparagraph{}
+2. Huge amount of labeled data
+\subparagraph{}
+注释：
+\begin{itemize}
+\item x轴：大量带有标签的数据
+\item y轴：Performance，机器学习性能
+\end{itemize}
+\subparagraph{}
+在深度学习崛起的初期，是数据和计算能力规模的发展，训练一个特别大的神经网络的能力，无论是在CPU还是GPU上面，是这些发展才让我们取得了巨大的进步，但是这几年我们也见证了算法方面的极大创新，许多算法的创新都是为了让神经网络运行的更快。
+\subparagraph{}
+一个重大的突破是由sigmoid函数转换为了ReLU函数，但是使用sigmoid函数，机器学习的问题是，在这个区域使用sigmiod函数的斜率，梯度会接近于0，所以学习会变得非常缓慢，因为用梯度下降算法时，梯度接近于0时， 参数会变化得很慢，学习也会变得很慢，而通过改变激活函数，神经网络用ReLU这个函数修正线性单元ReLU，它的梯度对于所有为正值的输入，输出都是1，因此梯度不会逐渐趋向0，而这里的梯度，这条线的斜率，在这左边为0。
+\subparagraph{}
+我们发现，只需将sigmoi函数转化为ReLU函数，便能使得梯度下降法运行的很快。  
+\begin{figure}[H]
+\center{\includegraphics[width=.4\textwidth]{1109.png}}
+\caption{深度学习的发展}
+\label{fig:1109}
+\end{figure}
+\subparagraph{}
+The process of training a neural network is iterative.
+\begin{figure}[H]
+\center{\includegraphics[width=.4\textwidth]{1110.png}}
+\caption{训练神经网络}
+\label{fig:1110}
+\end{figure}
+\subparagraph{}
+It could take a good amount of time to train a neural network, which affects your productivity. Faster computation helps to iterate and improve new algorithm.
+\section{神经网络基础}
+\subsection{二分分类}
+\subsection{logistic回归}
+\subsection{logistic回归损失函数}
+\subsection{梯度下降法}
+\subsection{导数}
+\subsection{更多导数的例子}
+\subsection{计算图}
+\subsection{计算图的导数计算}
+\subsection{logistic回归的梯度下降法}
+\subsection{m个样本的梯度下降}
+\subsection{向量化}
+\subsection{向量化的更多例子}
+\subsection{向量化logistic回归}
+\subsection{向量化logistic回归的梯度输出}
+\subsection{Python中的广播}
+\subsection{关于Python/numpy向量的说明}
+\subsection{Jupyter/Ipython笔记本的快速指南}
+\subsection{logistic损失函数的解释}
+\subparagraph*{}
+2.Python 允许你将程序分割为不同的模块，以便在其他的 Python 程序中重用。Python 内置提供了大量的标准模块，你可以将其用作程序的基础，或者作为学习 Python 编程的示例。这些模块提供了诸如文件 I/O、系统调用、Socket 支持，甚至类似 Tk 的用户图形界面（GUI）工具包接口。
+\section{浅层神经网络}
+\subsection{神经网络概览}
+\subsection{神经网络表示}
+\subsection{计算神经网络的输出}
+\subsection{多个例子中的向量化}
+\subsection{向量化实现的解释}
+\subsection{激活函数}
+\subsection{为什么需要非线性激活函数}
+\subsection{激活函数的倒数}
+\subsection{神经网络的梯度下降法}
+\subsection{直观理解反向传播}
+\subsection{随机初始化}
+
+\section{深层神经网络}
+\subsection{深层神经网络}
+\subparagraph{}
+1.Python 易于使用，是一门完整的编程语言；与 Shell 脚本或批处理文件相比，它为编写大型程序提供了更多的结构和支持。另一方面，Python 提供了比 C 更多的错误检查，并且作为一门 高级语言，它内置支持高级的数据结构类型，例如：灵活的数组和字典。因其更多的通用数据类型，Python 比 Awk 甚至 Perl 都适用于更多问题领域，至少大多数事情在 Python 中与其他语言同样简单。
+\subsection{深层神经网络中的前向传播}
+\subsection{核对矩阵的维度}
+\subsection{为什么使用深层表示}
+\subsection{搭建深层神经网络块}
+\subsection{前向和反向传播}
+\subsection{参数VS超参数}
+\subsection{这和大脑有什么关系}
+
+
+\end{CJK}
+\end{document}
