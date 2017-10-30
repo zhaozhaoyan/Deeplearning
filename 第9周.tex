@@ -1,0 +1,328 @@
+\documentclass{article}
+\usepackage{CJKutf8}
+\usepackage{minted}
+\usepackage{geometry}
+\geometry{a4paper,centering,scale=0.8}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{float}
+%可能用到的包
+\title{Machine Learning - Week 9}
+\author{赵燕}
+\date{}
+\begin{document} 
+\hfuzz=\maxdimen
+\tolerance=10000
+\hbadness=10000
+\begin{CJK}{UTF8}{gbsn} 
+\maketitle
+\renewcommand\contentsname{目录}
+\renewcommand\figurename{图}
+\tableofcontents
+\newpage
+
+\part{Anomaly Detection}
+\subparagraph{}
+异常检测(Anomaly detection)是机器学习算法的一个常见应用。这种算法的一个有趣之处在于:它虽然主要用于非监督学习问题,但从某些角度看,它又类似于一些监督学习问题。
+\section{Density Estimation}
+\subsection{Problem Motivation}
+\subparagraph{}
+什么是异常检测呢?为了解释这个概念,举一个例子:
+\subparagraph{}
+假想你是一个飞机引擎制造商,当你生产的飞机引擎从生产线上流出时,你需要进行 QA(质量控制测试),而作为这个测试的一部分,你测量了飞机引擎的一些特征变量,比如引擎运转时产生的热量,或者引擎的振动等等。
+\subparagraph{}
+这样一来,你就有了一个数据集,从 $x^{(1)}$ 到$x^{(m)}$  ,如果你生产了 m 个引擎的话,你将这些数据绘制成图表,看起来就是这个样子:
+\begin{figure}[H]
+\center{\includegraphics[width=.6\textwidth]{901.png}}
+\caption{异常检测示例}
+\label{fig:901}
+\end{figure}
+\subparagraph{}
+这里的每个点、每个叉,都是你的无标签数据。这样,异常检测问题可以定义如下:我们假设后来有一天,你有一个新的飞机引擎从生产线上流出,而你的新飞机引擎有特征变量 $x^{test}$ 。所谓的异常检测问题就是:我们希望知道这个新的飞机引擎是否有某种异常,或者说,我们希望判断这个引擎是否需要进一步测试。因为,如果它看起来像一个正常的引擎,那么我们可以直接将它运送到客户那里,而不需要进一步的测试。
+\begin{figure}[H]
+\center{\includegraphics[width=.6\textwidth]{902.png}}
+\caption{异常检测}
+\label{fig:902}
+\end{figure}
+\subparagraph{}
+给定数据集 $x^{(1)}$,$x^{(2)}$,...,$x^{(m)}$ ,我们假使数据集是正常的,我们希望知道新的数据 $x^{test}$ 是不是异常的,即这个测试数据不属于该组数据的几率如何。我们所构建的模型应该能根据该测试数据的位置告诉我们其属于一组数据的可能性 p(x)。
+\subparagraph{}
+图中,在蓝色圈内的数据属于该组数据的可能性较高,而越是偏远的数据,其属于该组数据的可能性就越低。
+这种方法称为密度估计,表达如下:
+\begin{figure}[H]
+\center{\includegraphics[width=.5\textwidth]{903.png}}
+\label{fig:902}
+\end{figure}
+\subparagraph{}
+异常检测的应用举例：
+\begin{figure}[H]
+\center{\includegraphics[width=.6\textwidth]{904.png}}
+\label{fig:904}
+\end{figure}
+\subparagraph{}
+欺诈检测:
+\subparagraph{}
+$X^{(i)}$ = 用户的第 i 个活动特征
+\subparagraph{}
+模型 p(x) =我们其属于一组数据的可能性
+\subparagraph{}
+通过 p(x)<ε 检测非正常用户。
+\subparagraph{}
+异常检测主要用来识别欺骗。例如在线采集而来的有关用户的数据,一个特征向量中可能会包含如:用户多久登录一次,访问过的页面,在论坛发布的帖子数量,甚至是打字速度等。尝试根据这些特征构建一个模型,可以用这个模型来识别那些不符合该模式的用户。
+\subparagraph{}
+再一个例子是检测一个数据中心,特征可能包含:内存使用情况,被访问的磁盘数量,CPU 的负载,网络的通信量等。根据这些特征可以构建一个模型,用来判断某些计算机是不是有可能出错了。
+\begin{figure}[H]
+\center{\includegraphics[width=.6\textwidth]{905.png}}
+\label{fig:905}
+\end{figure}
+\subsection{Gaussian Distribution}
+\subparagraph{}
+高斯分布（正态分布）：
+\begin{figure}[H]
+\center{\includegraphics[width=.6\textwidth]{907.png}}
+\caption{高斯分布}
+\label{fig:907}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.8\textwidth]{908.png}}
+\caption{高斯分布举例}
+\label{fig:908}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.6\textwidth]{913.png}}
+\caption{参数估计问题}
+\label{fig:902}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.5\textwidth]{910.png}}
+\label{fig:910}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.3\textwidth]{911.png}}
+\label{fig:911}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.3\textwidth]{912.png}}
+\label{fig:912}
+\end{figure}
+\subsection{Algorithm}
+\subparagraph{}
+用高斯分布开发异常检测算法
+\begin{figure}[H]
+\center{\includegraphics[width=.6\textwidth]{916.png}}
+\caption{参数估计}
+\label{fig:916}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.6\textwidth]{915.png}}
+\label{fig:915}
+\end{figure}
+\subparagraph{}
+异常检测算法：对于给定的数据集$x^{(1)}$,$x^{(2)}$,...,$x^{(m)}$ ,我们要针对每一个特征计算 μ 和 $\sigma^2$ 的估计值
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{918.png}}
+\caption{异常检测算法}
+\label{fig:918}
+\end{figure}
+\subparagraph{}
+当$p(x)<\epsilon$时，为异常
+\subparagraph{}
+我们选择一个 ε,将 p(x)=ε 作为我们的判定边界,当 p(x)>ε 时预测数据为正常数据,否则则为异常。
+\subparagraph{}
+在这段视频中,我们介绍了如何拟合 p(x),也就是 x 的概率值,以开发出一种异常检测算法。同时,在这节课中,我们也给出了通过给出的数据集拟合参数,进行参数估计,得到参数μ和σ,然后检测新的样本,确定新样本是否是异常。
+\subparagraph{}
+在接下来的课程中,我们将深入研究这一算法,同时更深入地介绍,怎样让算法工作地
+更加有效。
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{919.png}}
+\caption{异常检测举例}
+\label{fig:919}
+\end{figure}
+\section{Building an Anomaly Detection System}
+\subparagraph{}
+建立一个异常检测系统
+\subsection{Developing and Evaluating an Anomaly Detection System}
+\subparagraph{}
+开发和评价一个异常检测系统：
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{930.png}}
+\caption{实数评价法}
+\label{fig:930}
+\end{figure}
+\subparagraph{}
+异常检测算法是一个非监督学习算法,意味着我们无法根据结果变量 y 的值来告诉我们数据是否真的是异常的。我们需要另一种方法来帮助检验算法是否有效。当我们开发一个异常检测系统时,我们从带标记(异常或正常)的数据着手,我们从其中选择一部分正常数据用于构建训练集,然后用剩下的正常数据和异常数据混合的数据构成交叉检验集和测试集。
+\subparagraph{}
+例如:我们有 10000 台正常引擎的数据,有 20 台异常引擎的数据。 我们这样分配数据:
+\subparagraph{}
+6000 台正常引擎的数据作为训练集
+\subparagraph{}
+2000 台正常引擎和 10 台异常引擎的数据作为交叉检验集
+\subparagraph{}
+2000 台正常引擎和 10 台异常引擎的数据作为测试集
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{931.png}}
+\caption{飞机引擎示例}
+\label{fig:931}
+\end{figure}
+\subparagraph{}
+具体的评价方法如下:
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{932.png}}
+\caption{评价算法}
+\label{fig:932}
+\end{figure}
+\subparagraph{}
+1. 根据测试集数据,我们估计特征的平均值和方差并构建 p(x)函数
+\subparagraph{}
+2. 对交叉验证集或者测试集,我们尝试使用不同的 ε 值作为阀值,并预测数据是否异常,根据 $F_1$值或者查准率与查全率的比例来选择ε
+\subparagraph{}
+3.选出 ε 后,针对测试集进行预测,计算异常检验系统的 $F_1$ 值,或者查准率与查全率之比
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{933.png}}
+\label{fig:919}
+\end{figure}
+\subsection{Anomaly Detection vs. Supervised Learning}
+\subparagraph{}
+之前我们构建的异常检测系统也使用了带标记的数据,与监督学习有些相似,下面的对比有助于选择采用监督学习还是异常检测:
+\subparagraph{}
+异常检测与监督学习的比较：
+\begin{figure}[H]
+\center{\includegraphics[width=.8\textwidth]{936.png}}
+\label{fig:936}
+\caption{异常检测 VS 监督学习}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.8\textwidth]{938.png}}
+\label{fig:938}
+\caption{异常检测 VS 监督学习}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.8\textwidth]{939.png}}
+\label{fig:939}
+\caption{异常检测应用 VS 监督学习应用}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.8\textwidth]{940.png}}
+\label{fig:940}
+\end{figure}
+\subparagraph{}
+希望这节课能让你明白一个学习问题的什么样的特征,能让你把这个问题当做是一个异常检测,或者是一个监督学习的问题。另外,对于很多技术公司可能会遇到的一些问题,通常来说,正样本的数量很少,甚至有时候是 0,也就是说,出现了太多没见过的不同的异常类型,那么对于这些问题,通常应该使用的算法就是异常检测算法。
+\subsection{Choosing What Features to Use}
+\subparagraph{}
+选择异常检测算法的特征变量
+\subparagraph{}
+异常检测假设特征符合高斯分布,如果数据的分布不是高斯分布,异常检测算法也能够工作,但是最好调整参数将数据转换成高斯分布,例如使用对数函数:x = log(x+c),其中 c 为非负常数; 或者 $x=x^c$ ,c 为 0-1 之间的一个分数,等方法。
+\begin{figure}[H]
+\center{\includegraphics[width=.6\textwidth]{942.png}}
+\label{fig:942}
+\caption{非高斯特征量}
+\end{figure}
+\subparagraph{}
+如何得到异常检测算法的特征变量，使用误差分析：
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{943.png}}
+\label{fig:943}
+\caption{异常检测—误差分析}
+\end{figure}
+\subparagraph{}
+一个常见的问题是一些异常的数据可能也会有较高的 p(x)值,因而被算法认为是正常的。
+这种情况下误差分析能够帮助我们,我们可以分析那些被算法错误预测为正常的数据,观察
+能否找出一些问题。我们可能能从问题中发现我们需要增加一些新的特征,增加这些新特征
+后获得的新算法能够帮助我们更好地进行异常检测。
+\subparagraph{}
+通常来说,选择特征变量的方法是 ,我会选那些取值 ,既不会特别特别大 ,也不会特别特别小的 那些特征变量。
+\subparagraph{}
+我们通常可以通过将一些相关的特征进行组合,来获得一些新的更好的特征(异常数据的该特征值异常地大或小),例如,在检测数据中心的计算机状况的例子中,我们可以用 CPU负载与网络通信量的比例作为一个新的特征,如果该值异常地大,便有可能意味着该服务器是陷入了一些问题中。
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{945.png}}
+\label{fig:945}
+\caption{异常检测数据中心示例}
+\end{figure}
+\subparagraph{}
+在这段视频中,我们介绍了如何选择特征,以及对特征进行一些小小的转换,让数据更像正态分布,然后再把数据输入异常检测算法。同时也介绍了建立特征时,进行的误差分析方法,来捕捉各种异常的可能。希望你通过这些方法,能够了解如何选择好的特征变量,从而帮助你的异常检测算法,捕捉到各种不同的异常情况。
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{944.png}}
+\label{fig:944}
+\end{figure}
+\section{Multivariate Gaussian Distribution}
+\subparagraph{}
+多元高斯分布（选学）
+\subsection{Multivariate Gaussian Distribution}
+\subparagraph{}
+使用数据中心监控机的例子：
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{950.png}}
+\label{fig:950}
+\caption{数据中心监控机}
+\end{figure}
+\subparagraph{}
+假使我们有两个相关的特征,而且这两个特征的值域范围比较宽,这种情况下,一般的高斯分布模型可能不能很好地识别异常数据。其原因在于,一般的高斯分布模型尝试的是去同时抓住两个特征的偏差,因此创造出一个比较大的判定边界。
+\subparagraph{}
+下图中是两个相关特征,洋红色的线(根据 ε 的不同其范围可大可小)是一般的高斯分布模型获得的判定边界,很明显绿色的 X 所代表的数据点很可能是异常值,但是其 p(x)值却仍然在正常范围内。多元高斯分布将创建像图中蓝色曲线所示的判定边界。
+\subparagraph{}
+在一般的高斯分布模型中,我们计算 p(x)的方法是: 通过分别计算每个特征对应的几率然后将其累乘起来,在多元高斯分布模型中,我们将构建特征的协方差矩阵,用所有的特征一起来计算 p(x)。
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{952.png}}
+\label{fig:952}
+\caption{多元高斯（正态）分布}
+\end{figure}
+\subparagraph{}
+首先计算所有特征的平均值,然后再计算协方差矩阵:
+\begin{figure}[H]
+\center{\includegraphics[width=.5\textwidth]{953.png}}
+\label{fig:953}
+\end{figure}
+\subparagraph{}
+注:其中 μ 是一个向量,其每一个单元都是原特征矩阵中一行数据的均值。最后我们计算多元高斯分布的 p(x):
+\begin{figure}[H]
+\center{\includegraphics[width=.5\textwidth]{954.png}}
+\label{fig:954}
+\end{figure}
+\subparagraph{}
+其中:
+\subparagraph{}
+|Σ|是定矩阵,在 Octave 中用 det(sigma)计算
+\subparagraph{}
+Σ1 是逆矩阵,下面我们来看看协方差矩阵是如何影响模型的:
+\subparagraph{}
+上图是 5 个不同的模型,从左往右依次分析:\subparagraph{}
+1. 是一个一般的高斯分布模型
+\subparagraph{}
+2. 通过协方差矩阵,令特征 1 拥有较小的偏差,同时保持特征 2 的偏差
+\subparagraph{}
+3. 通过协方差矩阵,令特征 2 拥有较大的偏差,同时保持特征 1 的偏差
+\subparagraph{}
+4. 通过协方差矩阵,在不改变两个特征的原有偏差的基础上,增加两者之间的正相关
+\subparagraph{}
+5. 通过协方差矩阵,在不改变两个特征的原有偏差的基础上,增加两者之间的负相关性
+\subparagraph{}
+多元高斯分布模型与原高斯分布模型的关系:
+\subparagraph{}
+可以证明,原本的高斯分布模型是多元高斯分布模型的一个子集,即像上图中的第1、2、3,3 个例子所示,如果协方差矩阵只在对角线的单位上有非零的值时,即为原本的高斯分布模型了。
+\subparagraph{}
+原高斯分布模型和多元高斯分布模型的比较:
+\begin{figure}[H]
+\center{\includegraphics[width=.8\textwidth]{946.png}}
+\label{fig:946}
+\caption{原高斯分布模型和多元高斯分布模型的比较}
+\end{figure}
+\subparagraph{}
+原高斯分布模型被广泛使用着,如果特征之间在某种程度上存在相互关联的情况,我们可以通过构造新新特征的方法来捕捉这些相关性。
+\subparagraph{}
+如果训练集不是太大,并且没有太多的特征,我们可以使用多元高斯分布模型。
+\subsection{Anomaly Detection using the Multivariate Gaussian Distribution}
+\part{Recommender Systems}
+\section{Predicting Movie Ratings}
+\subsection{Problem Formulation}
+\subsection{Content Based Recommendations}
+\section{Collaborative Filtering}
+\subsection{Collaborative Filtering}
+\subsection{Collaborative Filtering Algorithm}
+\section{Low Rank Matrix Factorization}
+\subsection{Vectorization:Low Rank Matrix Factorization}
+\subsection{Implementational Detail: Mean Normalization}
+\end{CJK}
+\end{document}
