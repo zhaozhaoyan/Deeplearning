@@ -272,7 +272,7 @@ $X^{(i)}$ = 用户的第 i 个活动特征
 \subparagraph{}
 首先计算所有特征的平均值,然后再计算协方差矩阵:
 \begin{figure}[H]
-\center{\includegraphics[width=.5\textwidth]{953.png}}
+\center{\includegraphics[width=.6\textwidth]{953.png}}
 \label{fig:953}
 \end{figure}
 \subparagraph{}
@@ -284,11 +284,42 @@ $X^{(i)}$ = 用户的第 i 个活动特征
 \subparagraph{}
 其中:
 \subparagraph{}
-|Σ|是定矩阵,在 Octave 中用 det(sigma)计算
+$|\Sigma|$是定矩阵,在 Octave 中用 det(sigma)计算
 \subparagraph{}
 Σ1 是逆矩阵,下面我们来看看协方差矩阵是如何影响模型的:
+\begin{figure}[H]
+\center{\includegraphics[width=.6\textwidth]{960.png}}
+\label{fig:960}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.6\textwidth]{961.png}}
+\label{fig:961}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.6\textwidth]{963.png}}
+\label{fig:963}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.6\textwidth]{964.png}}
+\label{fig:964}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.6\textwidth]{965.png}}
+\label{fig:965}
+\end{figure}
 \subparagraph{}
-上图是 5 个不同的模型,从左往右依次分析:\subparagraph{}
+当改变$\mu$值时：
+\begin{figure}[H]
+\center{\includegraphics[width=.6\textwidth]{966.png}}
+\label{fig:966}
+\end{figure}
+\subparagraph{}
+上图是 5 个不同的模型,从左往右依次分析:
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{967.png}}
+\label{fig:967}
+\end{figure}
+\subparagraph{}
 1. 是一个一般的高斯分布模型
 \subparagraph{}
 2. 通过协方差矩阵,令特征 1 拥有较小的偏差,同时保持特征 2 的偏差
@@ -298,6 +329,53 @@ $X^{(i)}$ = 用户的第 i 个活动特征
 4. 通过协方差矩阵,在不改变两个特征的原有偏差的基础上,增加两者之间的正相关
 \subparagraph{}
 5. 通过协方差矩阵,在不改变两个特征的原有偏差的基础上,增加两者之间的负相关性
+\begin{figure}[H]
+\center{\includegraphics[width=.6\textwidth]{970.png}}
+\label{fig:967}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.6\textwidth]{971.png}}
+\label{fig:967}
+\end{figure}
+\subsection{Anomaly Detection using the Multivariate Gaussian Distribution}
+\subparagraph{}
+在我们谈到的最后一个视频,关于多元高斯分布,看到的一些建立的各种分布模型,当你改变参数,μ和Σ。在这段视频中,让我们用这些想法,并应用它们制定一个不同的异常检测算法。
+\subparagraph{}
+多元高斯(正态)分布:
+\begin{figure}[H]
+\center{\includegraphics[width=.6\textwidth]{972.png}}
+\label{fig:972}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.6\textwidth]{973.png}}
+\label{fig:973}
+\end{figure}
+\subparagraph{}
+我有一组样本是一个 n 维向量,我想我的样本来自一个多元高斯分布。我如何尝试估计我的参数 μ 和 Σ 以及标准公式?
+\subparagraph{}
+设置μ是你的训练样本的平均值:
+\begin{equation}
+\mu=\frac{1}{m}\sum_{i=1}^mx^{(i)}
+\end{equation}
+\subparagraph{}
+设置$\Sigma$:
+\begin{equation}
+\Sigma=\frac{1}{m}\sum_{i=1}^m(x^{(i)}-\mu){(x^{(i)}-\mu)}^T
+\end{equation}
+\subparagraph{}
+这其实只是当我们使用 PCA 算法时候,有Σ时写出来。所以你只需插入上述两个公式,这会给你你估计的参数μ和你估计的参数Σ。所以,这里给出的数据集是你如何估计μ和Σ。
+\subparagraph{}
+让我们以这种方法而只需将其插入到异常检测算法。那么,我们如何把所有这一切共同开发一个异常检测算法?
+\begin{figure}[H]
+\center{\includegraphics[width=.6\textwidth]{974.png}}
+\label{fig:974}
+\caption{异常检测算法}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.6\textwidth]{975.png}}
+\label{fig:975}
+\caption{与原模型的关系}
+\end{figure}
 \subparagraph{}
 多元高斯分布模型与原高斯分布模型的关系:
 \subparagraph{}
@@ -309,20 +387,305 @@ $X^{(i)}$ = 用户的第 i 个活动特征
 \label{fig:946}
 \caption{原高斯分布模型和多元高斯分布模型的比较}
 \end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.8\textwidth]{977.png}}
+\label{fig:977}
+\caption{原高斯分布模型和多元高斯分布模型的比较}
+\end{figure}
 \subparagraph{}
 原高斯分布模型被广泛使用着,如果特征之间在某种程度上存在相互关联的情况,我们可以通过构造新新特征的方法来捕捉这些相关性。
 \subparagraph{}
 如果训练集不是太大,并且没有太多的特征,我们可以使用多元高斯分布模型。
-\subsection{Anomaly Detection using the Multivariate Gaussian Distribution}
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{980.png}}
+\label{fig:980}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{981.png}}
+\label{fig:981}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{982.png}}
+\label{fig:982}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{983.png}}
+\label{fig:983}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{984.png}}
+\label{fig:984}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{985.png}}
+\label{fig:985}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{986.png}}
+\label{fig:986}
+\end{figure}
 \part{Recommender Systems}
+\subparagraph{}
+推荐系统
 \section{Predicting Movie Ratings}
 \subsection{Problem Formulation}
+\subparagraph{}
+问题形式化：
+\subparagraph{}
+在接下来的视频中,我想讲一下推荐系统。我想讲推荐系统有两个原因:
+\subparagraph{}
+第一、仅仅因为它是机器学习中的一个重要的应用。在过去几年,我偶尔访问硅谷不同的技术公司,我常和工作在这儿致力于机器学习应用的人们聊天,我常问他们,最重要的机器学习的应用是什么,或者,你最想改进的机器学习应用有哪些。我最常听到的答案是推荐系统。现在,在硅谷有很多团体试图建立很好的推荐系统。因此,如果你考虑网站像亚马逊,或网飞公司或易趣,或 iTunes Genius,有很多的网站或系统试图推荐新产品给用户。如,亚马逊推荐新书给你,网飞公司试图推荐新电影给你,等等。这些推荐系统,根据浏览你过去买过什么书,或过去评价过什么电影来判断。这些系统会带来很大一部分收入,比如为亚马
+逊和像网飞这样的公司。因此,对推荐系统性能的改善,将对这些企业的有实质性和直接的影响。
+\subparagraph{}
+推荐系统是个有趣的问题,在学术机器学习中因此,我们可以去参加一个学术机器学习会议,推荐系统问题实际上受到很少的关注,或者,至少在学术界它占了很小的份额。但是,如果你看正在发生的事情,许多有能力构建这些系统的科技企业,他们似乎在很多企业中占据很高的优先级。这是我为什么在这节课讨论它的原因之一。
+\subparagraph{}
+我想讨论推荐系统地第二个原因是:这个班视频的最后几集我想讨论机器学习中的一些大思想,并和大家分享。这节课我们也看到了,对机器学习来说,特征是很重要的,你所选择的特征,将对你学习算法的性能有很大的影响。因此,在机器学习中有一种大思想,它针对一些问题,可能并不是所有的问题,而是一些问题,有算法可以为你自动学习一套好的特征。因此,不要试图手动设计,而手写代码这是目前为止我们常干的。有一些设置,你可以
+有一个算法,仅仅学习其使用的特征,推荐系统就是类型设置的一个例子。还有很多其它的,但是通过推荐系统,我们将领略一小部分特征学习的思想,至少,你将能够了解到这方面的一个例子,我认为,机器学习中的大思想也是这样。因此,让我们开始讨论推荐系统问题形式化。
+\subparagraph{}
+\begin{figure}[H]
+\center{\includegraphics[width=.8\textwidth]{989.png}}
+\label{fig:989}
+\caption{推荐系统示例：电影评分}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.8\textwidth]{990.png}}
+\label{fig:990}
+\end{figure}
 \subsection{Content Based Recommendations}
+\subparagraph{}
+基于内容的推荐
+\subparagraph{}
+在一个基于内容的推荐系统算法中,我们假设对于我们希望推荐的东西有一些数据,这些数据是有关这些东西的特征。
+\subparagraph{}
+在我们的例子中,我们可以假设每部电影都有两个特征,如$x_1$ 代表电影的浪漫程度,$x_2$代表电影的动作程度。
+\subparagraph{}
+则每部电影都有一个特征向量,如$x^{(1)}$是第一部电影的特征向量为$[0.9 0]$。
+\subparagraph{}
+下面我们要基于这些特征来构建一个推荐系统算法。假设我们采用线性回归模型,我们可以针对每一个用户都训练一个线性回归模型,如$\theta^{(1)}$是第一个用户的模型的参数。
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{993.png}}
+\label{fig:993}
+\end{figure}
+\subparagraph{} 
+于是,我们有:
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{995.png}}
+\label{fig:995}
+\end{figure}
+\subparagraph{}
+$\theta^{(j)}$ 用户 j 的参数向量
+\subparagraph{}
+$x^{(i)}$ 电影 i 的特征向量
+\subparagraph{}
+对于用户 j 和电影 i,我们预测评分为:${\theta^{(j)}}^Tx^{(i)}$
+\subparagraph{}
+代价函数:
+\subparagraph{}
+针对用户 j,该线性回归模型的代价为预测误差的平方和,加上正则化项:
+\begin{figure}[H]
+\center{\includegraphics[width=.6\textwidth]{991.png}}
+\label{fig:991}
+\end{figure}
+\subparagraph{}
+其中 i:r(i,j)表示我们只计算那些用户 j 评过分的电影。在一般的线性回归模型中,误差项和正则项应该都是乘以 1/2m,在这里我们将 m 去掉。并且我们不对方差项 $\theta_0$进行正则化处理。
+\subparagraph{}
+上面的代价函数只是针对一个用户的,为了学习所有用户,我们将所有用户的代价函数求和:
+\begin{figure}[H]
+\center{\includegraphics[width=.8\textwidth]{992.png}}
+\label{fig:992}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.8\textwidth]{996.png}}
+\label{fig:996}
+\end{figure}
+\subparagraph{}
+如果我们要用梯度下降法来求解最优解,我们计算代价函数的偏导数后得到梯度下降的更新公式为:
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{998.png}}
+\label{fig:998}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{994.png}}
+\label{fig:994}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{997.png}}
+\label{fig:997}
+\end{figure}
 \section{Collaborative Filtering}
+\subparagraph{}
+协同过滤（Collaborative Filtering）
 \subsection{Collaborative Filtering}
+\subparagraph{}
+自行学习出所要的特征
+\begin{figure}[H]
+\center{\includegraphics[width=.8\textwidth]{999.png}}
+\label{fig:999}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.6\textwidth]{9991.png}}
+\label{fig:9991}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.6\textwidth]{9992.png}}
+\label{fig:9992}
+\end{figure}
+\subparagraph{}
+优化算法：
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{9993.png}}
+\label{fig:9993}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{9994.png}}
+\label{fig:9994}
+\end{figure}
+\subparagraph{}
+协同过滤：
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{9995.png}}
+\label{fig:9995}
+\end{figure}
+\subparagraph{}
+协同过滤算法指的是 ,当你执行这个算法时 ,你通过一大堆用户得到的数据 ,这些用户实际上在高效地进行了协同合作 ,来得到每个人对电影的评分值 ,只要用户对某几部电影进行评分, 每个用户就都在帮助算法,更好的学习出特征 ,这样通过自己 对几部电影评分之后,我就能帮助系统更好的学习到特征 ,这些特征可以被系统运用为其他人,做出更准确的电影预测 ,协同的另一层意思是说每位用户都在为了大家的利益学习出更好的特征, 这就是协同过滤 。
 \subsection{Collaborative Filtering Algorithm}
+\subparagraph{}
+协同过滤算法：
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{9997.png}}
+\label{fig:9997}
+\end{figure}
+\subparagraph{}
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{9996.png}}
+\label{fig:9996}
+\end{figure}
+\subparagraph{}
+在协同过滤从算法中,我们通常不使用方差项,如果需要的话,算法会自动学得。
+\subparagraph{}
+协同过滤算法使用步骤如下:
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{9998.png}}
+\label{fig:9998}
+\end{figure}
+\subparagraph{}
+1. 初始 $x^{(1)}$,$x^{(2)}$ ,...,$x^{(nm)}$ ,$\theta^{(1)}$ ,$\theta^{(2)}$ ,...,$\theta^{(nu)}$ 为一些随机小值
+\subparagraph{}
+2. 使用梯度下降算法最小化代价函数
+\subparagraph{}
+3. 在训练完算法后,我们预测${\theta^{(j)}}^Tx^{(i)}$为用户 j 给电影 i 的评分
+\begin{figure}[H]
+\center{\includegraphics[width=.6\textwidth]{9999.png}}
+\label{fig:9999}
+\end{figure}
+\subparagraph{}
+通过这个学习过程获得的特征矩阵包含了有关电影的重要数据,这些数据不总是人能读懂的,但是我们可以用这些数据作为给用户推荐电影的依据。
+\subparagraph{}
+例如,如果一位用户正在观看电影$x^{(i)}$,我们可以寻找另一部电影$x^{(j)}$ ,依据两部电影的特征向量之间的距离$\parallel{x^{(i)}-x^{(j)}}\parallel$的大小。
 \section{Low Rank Matrix Factorization}
+\subparagraph{}
+算法的向量化实现
 \subsection{Vectorization:Low Rank Matrix Factorization}
+\subparagraph{}
+向量化：低秩矩阵分解
+\subparagraph{}
+举例说明：
+\subparagraph{}
+1.当给出一件产品时,你能否找到与之相关的其它产品。
+\subparagraph{}
+2.一位用户最近看上一件产品,有没有其它相关的产品,你可以推荐给他。
+\subparagraph{}
+我将要做的是:实现一种选择的方法,写出协同过滤算法的预测情况。
+\subparagraph{}
+我们有关于五部电影的数据集,我将要做的是,将这些用户的电影评分,进行分组并存到一个矩阵中。
+\begin{figure}[H]
+\center{\includegraphics[width=.6\textwidth]{9910.png}}
+\label{fig:9910}
+\end{figure}
+\subparagraph{}
+我们有五部电影,以及四位用户,那么 这个矩阵 Y 就是一个 5 行 4 列的矩阵,它将这些电影的用户评分数据都存在矩阵里:
+\begin{figure}[H]
+\center{\includegraphics[width=.8\textwidth]{9912.png}}
+\label{fig:9912}
+\end{figure}
+\subparagraph{}
+寻找相关电影：
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{9915.png}}
+\label{fig:9915}
+\end{figure}
+现在既然你已经对特征参数向量进行了学习,那么我们就会有一个很方便的方法来度量两部电影之间的相似性。例如说:电影 i 有一个特征向量 $x^{(i)}$,你是否能找到一部不同的电影j,保证两部电影的特征向量之间的距离$x^{(i)}$ 和 $x^{(j)}$很小,那就能很有力地表明电影 i 和电影 j在某种程度上有相似,至少在某种意义上,某些人喜欢电影 i,或许更有可能也对电影 j 感兴趣。总结一下,当用户在看某部电影 i 的时候,如果你想找 5 部与电影非常相似的电影,为了能给用户推荐 5 部新电影,你需要做的是找出电影 j,在这些不同的电影中与我们要找的电影 i 的距离最小,这样你就能给你的用户推荐几部不同的电影了。
+\subparagraph{}
+通过这个方法,希望你能知道,如何进行一个向量化的计算来对所有的用户和所有的电影进行评分计算。同时希望你也能掌握,通过学习特征参数,来找到相关电影和产品的方法。
+\begin{figure}[H]
+\center{\includegraphics[width=.8\textwidth]{9913.png}}
+\label{fig:9913}
+\end{figure}
 \subsection{Implementational Detail: Mean Normalization}
+\subparagraph{}
+均值归一化
+\subparagraph{}
+\begin{figure}[H]
+\center{\includegraphics[width=.8\textwidth]{9920.png}}
+\label{fig:9920}
+\end{figure}
+\subparagraph{}
+如果我们新增一个用户 Eve,并且 Eve 没有为任何电影评分,那么我们以什么为依据为 Eve 推荐电影呢?
+\subparagraph{}
+我们首先需要对结果 Y 矩阵进行均值归一化处理,将每一个用户对某一部电影的评分减去所有用户对该电影评分的平均值:
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{9921.png}}
+\label{fig:9921}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{9922.png}}
+\label{fig:9922}
+\end{figure}
+\subparagraph{}
+然后我们利用这个新的 Y 矩阵来训练算法。 如果我们要用新训练出的算法来预测评分,则需要将平均值重新加回去,预测${(\theta^{(j)})}^T(x^{(i)})+\mu_i$, 对于 Eve,我们的新模型会认为她给每部电影的评分都是该电影的平均分。
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{9923.png}}
+\label{fig:9923}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{9925.png}}
+\label{fig:9925}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{9926.png}}
+\label{fig:9926}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{9927.png}}
+\label{fig:9927}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{9928.png}}
+\label{fig:9928}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{9929.png}}
+\label{fig:9929}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{9930.png}}
+\label{fig:9930}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{9931.png}}
+\label{fig:9931}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{9932.png}}
+\label{fig:9932}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{9933.png}}
+\label{fig:9933}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{9934.png}}
+\label{fig:9934}
+\end{figure}
 \end{CJK}
 \end{document}
