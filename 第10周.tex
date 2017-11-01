@@ -1,0 +1,280 @@
+\documentclass{article}
+\usepackage{CJKutf8}
+\usepackage{minted}
+\usepackage{geometry}
+\geometry{a4paper,centering,scale=0.8}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{float}
+%可能用到的包
+\title{Machine Learning - Week 10}
+\author{赵燕}
+\date{}
+\begin{document} 
+\hfuzz=\maxdimen
+\tolerance=10000
+\hbadness=10000
+\begin{CJK}{UTF8}{gbsn} 
+\maketitle
+\renewcommand\contentsname{目录}
+\renewcommand\figurename{图}
+\tableofcontents
+\newpage
+
+\part{Large Scale Machine Learning}
+\subparagraph{}
+大规模机器学习
+\section{Gradient Descent with Large Datasets}
+\subsection{Learning With Large Datasets}
+\subparagraph{}
+大型数据集的学习：
+\begin{figure}[H]
+\center{\includegraphics[width=.6\textwidth]{1001.png}}
+\caption{机器学习与数据}
+\label{fig:1001}
+\end{figure}
+\subparagraph{}
+如果我们有一个低方差的模型,增加数据集的规模可以帮助你获得更好的结果。我们应该怎样应对一个有 100 万条记录的训练集?
+\subparagraph{}
+以线性回归模型为例,每一次梯度下降迭代,我们都需要计算训练集的误差的平方和,如果我们的学习算法需要有 20 次迭代,这便已经是非常大的计算代价。
+\subparagraph{}
+首先应该做的事是去检查一个这么大规模的训练集是否真的必要,也许我们只用 1000个训练集也能获得较好的效果,我们可以绘制学习曲线来帮助判断。
+\subparagraph{}
+通常的方法是画学习曲线,如果你画了学习曲线而且你的训练目标看上去像这样, 这是$J_{train}(θ)$ ,如果你的j交叉验证集的目标 $J_{cv}(θ)$,看上去像这个 ,这看起来像高方差的学习算法 ,我们会对增加训练集的大小来提高性能更有信心, 而相比之下如果你画的学习曲线是这样的 ,你的训练目标是这样的, 你的交叉验证是那样的, 这看起来像经典的高偏差学习算法。
+\begin{figure}[H]
+\center{\includegraphics[width=.6\textwidth]{11103.png}}
+\label{fig:11103}
+\caption{大型数据集的学习}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.6\textwidth]{11102.png}}
+\label{fig:11102}
+\end{figure}
+\subsection{Stochastic Gradient Descent}
+\subparagraph{}
+对于很多机器学习算法,包括线性回归、逻辑回归、神经网络等等 ,算法的实现都是通过得出某个代价函数 ,或者某个最优化的目标来实现的 ,然后使用梯度下降这样的方法来求得代价函数的最小值 ,当我们的训练集较大时 ,梯度下降算法则显得计算量非常大。
+\begin{figure}[H]
+\center{\includegraphics[width=.6\textwidth]{11105.png}}
+\label{fig:11105}
+\caption{线性回归梯度下降}
+\end{figure}
+\subparagraph{}
+上述梯度下降也叫作批量梯度下降（Bitch gradient descent）
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{11106.png}}
+\label{fig:11106}
+\caption{批量梯度下降与随机梯度下降}
+\end{figure}
+\subparagraph{}
+随机梯度下降算法在每一次计算之后便更新参数 θ,而不需要首先将所有的训练集求和,在梯度下降算法还没有完成一次迭代时,随机梯度下降算法便已经走出了很远。但是这样的算法存在的问题是,不是每一步都是朝着”正确”的方向迈出的。因此算法虽然会逐渐走向全局最小值的位置,但是可能无法站到那个最小值的那一点,而是在最小值点附近徘徊。
+\begin{figure}[H]
+\center{\includegraphics[width=.6\textwidth]{11107.png}}
+\label{fig:11107}
+\caption{随机梯度下降}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.6\textwidth]{11108.png}}
+\label{fig:11108}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.6\textwidth]{11109.png}}
+\label{fig:11109}
+\end{figure}
+\subsection{Mini-Batch Gradient Descent}
+\subparagraph{}
+小批量梯度下降算法是介于批量梯度下降算法和随机梯度下降算法之间的算法,每计算常数 b 次训练实例,便更新一次参数 θ。
+\subparagraph{}
+各种梯度下降的一次迭代使用的样本个数
+\subparagraph{}
+通常我们会令 b 在 2-100 之间。这样做的好处在于,我们可以用向量化的方式来循环b 个训练实例,如果我们用的线性代数函数库比较好,能够支持平行处理,那么算法的总体表现将不受影响(与随机梯度下降相同)。
+\begin{figure}[H]
+\center{\includegraphics[width=.6\textwidth]{11110.png}}
+\label{fig:11110}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.6\textwidth]{11112.png}}
+\label{fig:11112}
+\caption{批量梯度下降}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.6\textwidth]{11111.png}}
+\label{fig:11111}
+\end{figure}
+\subsection{Stochastic Gradient Descent Convergence}
+\subparagraph{}
+随机梯度下降收敛
+\subparagraph{}
+现在我们介绍随机梯度下降算法的调试,以及学习率 α 的选取。
+\subparagraph{}
+数据大的时候使用随机梯度下降，小的时候使用batch Gradient Descent即可。
+\subparagraph{}
+在批量梯度下降中,我们可以令代价函数 J 为迭代次数的函数,绘制图表,根据图表来判断梯度下降是否收敛。但是,在大规模的训练集的情况下,这是不现实的,因为计算代价太大了。
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{11114.png}}
+\label{fig:11114}
+\end{figure}
+\subparagraph{}
+在随机梯度下降中,我们在每一次更新 θ 之前都计算一次代价,然后每 X 次迭代后,求出这 X 次对训练实例计算代价的平均值,然后绘制这些平均值与 X 次迭代的次数之间的函数图表。
+\subparagraph{}
+当我们绘制这样的图表时,可能会得到一个颠簸不平但是不会明显减少的函数图像(如上面左下图中蓝线所示)。我们可以增加你要平均的样本数量来使得函数更加平缓,也许便能看出下降的趋势了(如上面左下图中红线所示);或者可能函数图表仍然是颠簸不平且不下降的(如洋红色线所示),那么我们的模型本身可能存在一些错误。
+\subparagraph{}
+如果我们得到的曲线如上面右下方所示,代价值是在不断地上升,那么选择一个较小的学习率 α。
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{11115.png}}
+\label{fig:11115}
+\end{figure}
+\subparagraph{}
+我们也可以令学习率随着迭代次数的增加而减小,例如令:
+\begin{equation}
+\alpha=\frac{const1}{interationNumber+const2}
+\end{equation}
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{11116.png}}
+\label{fig:11116}
+\end{figure}
+这个公式起作用的原因是: 随着算法的运行 ,迭代次数会越来越大, 因此学习速率α会慢慢变小 ,因此你的每一步就会越来越小, 直到最终收敛到全局最小值, 所以 ,如果你慢慢减小α的值到0 ,你会最后得到一个更好一点的假设。但由于确定这两个常数需要更多的工作量 ，并且我们通常也对能够很接近全局最小值的参数已经很满意了，因此我们很少采用逐渐减小α的值的方法。
+\subparagraph{}
+随着我们不断地靠近全局最小值,通过减小学习率,我们迫使算法收敛而非在最小值附近徘徊。 但是通常我们不需要这样做便能有非常好的效果了,对 α 进行调整所耗费的计算通常不值得。
+\subparagraph{}
+总结下,这段视频中,我们介绍了一种方法,近似地监测出随机梯度下降算法在最优化代价函数中的表现,这种方法不需要定时地扫描整个训练集,来算出整个样本集的代价函数,而是只需要每次对最后 1000 个,或者多少个样本,求一下平均值。应用这种方法,你既可以保证随机梯度下降法正在正常运转和收敛,也可以用它来调整学习速率α的大小。
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{11117.png}}
+\label{fig:11117}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{11118.png}}
+\label{fig:11118}
+\end{figure}
+\section{Advanced Topics}
+\subsection{Online Learning}
+\subparagraph{}
+在线学习机制：
+\subparagraph{}
+一种新的大规模的机器学习机制,叫做在线学习机制。在线学习机制让我们可以模型化问题。
+\subparagraph{}
+今天,许多大型网站或者许多大型网络公司,使用不同版本的在线学习机制算法,从大批的涌入又离开网站的用户身上进行学习。特别要提及的是,如果你有一个由连续的用户流引发的连续的数据流,进入你的网站,你能做的是使用一个在线学习机制,从数据流中学习用户的偏好,然后使用这些信息来优化一些关于网站的决策。
+\subparagraph{}
+假定你有一个提供运输服务的公司,用户们来向你询问把包裹从 A 地运到 B 地的服务,同时假定你有一个网站,让用户们可多次登陆,然后他们告诉你,他们想从哪里寄出包裹,以及包裹要寄到哪里去,也就是出发地与目的地,然后你的网站开出运输包裹的的服务价格。比如,我会收取\${}50来运输你的包裹,我会收取\${}20之类的,然后根据你开给用户的这个价
+格,用户有时会接受这个运输服务,那么这就是个正样本,有时他们会走掉,然后他们拒绝购买你的运输服务,所以,让我们假定我们想要一个学习算法来帮助我们,优化我们想给用户开出的价格。
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{11120.png}}
+\label{fig:11120}
+\end{figure}
+\subparagraph{}
+一个算法来从中学习的时候来模型化问题在线学习算法指的是对数据流而非离线的静态数据集的学习。许多在线网站都有持续不断的用户流,对于每一个用户,网站希望能在不将数据存储到数据库中便顺利地进行算法学习。
+\subparagraph{}
+假使我们正在经营一家物流公司,每当一个用户询问从地点 A 至地点 B 的快递费用时,我们给用户一个报价,该用户可能选择接受(y=1)或不接受(y=0)。
+\subparagraph{}
+现在,我们希望构建一个模型,来预测用户接受报价使用我们的物流服务的可能性。因此报价 是我们的一个特征,其他特征为距离,起始地点,目标地点以及特定的用户数据。模型的输出是 p(y=1)。
+\subparagraph{}
+在线学习的算法与随机梯度下降算法有些类似,我们对单一的实例进行学习,而非对一个提前定义的训练集进行循环。
+\subparagraph{}
+一旦对一个数据的学习完成了,我们便可以丢弃该数据,不需要再存储它了。这种方式的好处在于,我们的算法可以很好的适应用户的倾向性,算法可以针对用户的当前行为不断地更新模型以适应该用户。
+\subparagraph{}
+每次交互事件并不只产生一个数据集,例如,我们一次给用户提供 3 个物流选项,用户选择 2 项,我们实际上可以获得 3 个新的训练实例,因而我们的算法可以一次从 3 个实例中学习并更新模型。
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{11121.png}}
+\label{fig:11121}
+\caption{学习搜索手机示例}
+\end{figure}
+\subparagraph{}
+这些问题中的任何一个都可以被归类到标准的,拥有一个固定的样本集的机器学习问题中。或许,你可以运行一个你自己的网站,尝试运行几天,然后保存一个数据集,一个固定的数据集,然后对其运行一个学习算法。
+\subparagraph{}
+但是这些是实际的问题,在这些问题里,你会看到大公司会获取如此多的数据,真的没有必要来保存一个固定的数据集,取而代之的是你可以使用一个在线学习算法来连续的学习,从这些用户不断产生的数据中来学习。
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{11122.png}}
+\label{fig:11122}
+\end{figure}
+\subparagraph{}
+这就是在线学习机制,然后就像我们所看到的,我们所使用的这个算法与随机梯度下降算法非常类似,唯一的区别的是,我们不会使用一个固定的数据集,我们会做的是获取一个用户样本,从那个样本中学习,然后丢弃那个样本并继续下去,而且如果你对某一种应用有一个连续的数据流,这样的算法可能会非常值得考虑。
+\subparagraph{}
+当然,在线学习的一个优点就是,如果你有一个变化的用户群,又或者你在尝试预测的事情,在缓慢变化,就像你的用户的品味在缓慢变化,这个在线学习算法,可以慢慢地调试你所学习到的假设,将其调节更新到最新的用户行为。
+\subsection{Map Reduce and Data Parallelism}
+\subparagraph{}
+进行大规模机器学习的另一种方法：映射（化简）约减和数据并行
+\subparagraph{}
+有些算法太大，太复杂以至于不能在一台计算机上运行
+\subparagraph{}
+映射化简和数据并行对于大规模机器学习问题而言是非常重要的概念。之前提到,如果我们用批量梯度下降算法来求解大规模数据集的最优解,我们需要对整个训练集进行循环,计算偏导数和代价,再求和,计算代价非常大。如果我们能够将我们的数据集分配给不多台计算机,让每一台计算机处理数据集的一个子集,然后我们将计所的结果汇总在求和。这样的方法叫做映射简化。
+\subparagraph{}
+具体而言,如果任何学习算法能够表达为,对训练集的函数的求和,那么便能将这个任分配给多台计算机(或者同一台计算机的不同 CPU 核心),以达到加速处理的目的。
+\subparagraph{}
+例如,我们有 400 个训练实例,我们可以将批量梯度下降的求和任务分配给 4 台计算机进行处理:
+\begin{figure}[H]
+\center{\includegraphics[width=.8\textwidth]{11130.png}}
+\label{fig:11130}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{11131.png}}
+\label{fig:11131}
+\caption{映射化简}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{11135.png}}
+\label{fig:11135 }
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{11136.png}}
+\label{fig:11136}
+\end{figure}
+\subparagraph{}
+映射化简(map reduce)技术,它可以通过将数据分配到多台计算机的方式来并行化机器学习算法,实际上这种方法 也可以利用 单台计算机的多个核。
+\subparagraph{}
+网上有许多优秀的开源映射化简实现,实际上一个称为Hadoop 的开源系统,已经拥有了众多的用户,通过自己实现映射化简算法 或者使用别人的开源实现,你就可以利用映射化简技术来并行机器学习算法,这样你的算法将能够处理,单台计算机处理不了的大数据 。
+\subparagraph{}
+很多高级的线性代数函数库已经能够利用多核 CPU 的多个核心来并行地处理矩阵运算,这也是算法的向量化实现如此重要的缘故(比调用循环快)。
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{11137.png}}
+\label{fig:11137}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{11138.png}}
+\label{fig:11138}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{11139.png}}
+\label{fig:11139}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{11140.png}}
+\label{fig:11140}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{11141.png}}
+\label{fig:11141}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{11142.png}}
+\label{fig:11142}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{11143.png}}
+\label{fig:11143}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{11144.png}}
+\label{fig:11144}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{11145.png}}
+\label{fig:11145}
+\caption{2题答案有错误}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{11146.png}}
+\label{fig:11146}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{11147.png}}
+\label{fig:11147}
+\end{figure}
+\begin{figure}[H]
+\center{\includegraphics[width=.7\textwidth]{11148.png}}
+\label{fig:11148}
+\caption{此题答案有误}
+\end{figure}
+\end{CJK}
+\end{document}
